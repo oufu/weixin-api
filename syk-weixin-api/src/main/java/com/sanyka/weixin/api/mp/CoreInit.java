@@ -22,15 +22,22 @@ import com.sanyka.weixin.util.SignUtil;
  * @author OF
  * @date 2017年10月10日
  */
-@WebServlet(name = "coreInit", loadOnStartup=1,urlPatterns = { "/wx/sing.html" })
+@WebServlet(name = "coreInit", loadOnStartup = 1, urlPatterns = { "/wx/sing.html" })
 public class CoreInit extends HttpServlet {
 	private static final Logger log = LoggerFactory.getLogger(CoreInit.class);
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
-	 //加载配置文件 
-		log.info("init config file 初始化功能");
+		// 加载配置文件
+		log.info("init weixin config file start");
+		//加载配置文件 
+		WeixinProperties.init();
+		//初始化常量
+		AppConfig.init();
+		//手动配置
+		AppConfig.configConstant(new AppConfig());
+		log.info("init weixin config file end");
 	}
 
 	/**
@@ -48,8 +55,8 @@ public class CoreInit extends HttpServlet {
 			String timestamp = request.getParameter("timestamp");// 时间戳
 			String nonce = request.getParameter("nonce"); // 随机数
 			String echostr = request.getParameter("echostr");
-			log.debug("WeChat signature:" + signature + ",timestamp:" + timestamp
-					+ ",nonce:" + nonce + "echostr" + echostr);
+			log.debug("WeChat signature:" + signature + ",timestamp:"
+					+ timestamp + ",nonce:" + nonce + "echostr" + echostr);
 			// 签名判断
 			if (SignUtil.getSignature(signature, AppConfig.WX_TOKEN, timestamp,
 					nonce)) {
@@ -84,13 +91,13 @@ public class CoreInit extends HttpServlet {
 			MessageBase messageBase = HandlerFactory.getMessageHandler();
 			String result = messageBase.execute(request);
 			OutputStream out = response.getOutputStream();
-			if(result == null ){
+			if (result == null) {
 				result = "";
 			}
 			out.write(result.getBytes("utf-8"));
 			out.close();
 			out.flush();
-			log.info("result :[{}] ",result);
+			log.info("result :[{}] ", result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

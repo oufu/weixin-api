@@ -1,5 +1,6 @@
 package com.sanyka.weixin.api.mp.message;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,12 +32,13 @@ public class MessageHandler extends MessageBase {
 			log.error("xml 解析失败");
 			return "";
 		}
+
 		// 消息类型
 		String msgType = params.get("MsgType");
 		NormalMessageHandler normalMessage = HandlerFactory
 				.getNormalMessageHandler();
 		// 文本消息处理
-		String result = null;
+		ReturnMessage result = null;
 		if (MsgTypeEnum.Text.toString().equals(msgType)) {
 			result = normalMessage.textTypeMsg(params);
 		} else if (MsgTypeEnum.Image.toString().equals(msgType)) {
@@ -58,10 +60,91 @@ public class MessageHandler extends MessageBase {
 			// 处理链接消息
 			result = normalMessage.linkTypeMsg(params);
 		} else if (MsgTypeEnum.Event.toString().equals(msgType)) {
-			// 事件处理
-
+			// 获取事件类型
+			String event = params.get("Event");
+			// 获取消息处理工具类
+			EventMessageHandler eventMsgHandler = HandlerFactory
+					.getEventMessageHandler();
+			// 自定义菜单事件
+			if (EventTypeEnum.Click.toString().equals(event)) {
+				// 点击菜单拉取消息时的事件推送
+				result = eventMsgHandler.click(params);
+			} else if (EventTypeEnum.View.toString().equals(event)) {
+				// 点击菜单跳转链接时的事件推送
+				result = eventMsgHandler.view(params);
+			} else if (EventTypeEnum.Subscribe.toString().equals(event)) {
+				// 关注事件
+				result = eventMsgHandler.subscribe(params);
+			} else if (EventTypeEnum.Unsubscribe.toString().equals(event)) {
+				// 取消关注事件
+				result = eventMsgHandler.unsubscribe(params);
+			} else if (EventTypeEnum.Scan.toString().equals(event)) {
+				// 扫描带参数二维码事件
+				// 获取事件KEY值，判断是否关注
+				String eventKey = params.get("EventKey");
+				if (eventKey.startsWith("qrscene_")) {
+					// 用户未关注时，进行关注后的事件推送
+					result = eventMsgHandler.qrsceneSubscribe(params);
+				} else {
+					// 用户已关注时的事件推送
+					result = eventMsgHandler.qrsceneScan(params);
+				}
+			} else if (EventTypeEnum.Location.toString().equals(event)) {
+				// 上报地理位置事件
+				result = eventMsgHandler.location(params);
+			} else if (EventTypeEnum.Scancode_Push.toString().equals(event)) {
+				// 扫码推事件的事件推送
+				result = eventMsgHandler.scancodePush(params);
+			} else if (EventTypeEnum.Scancode_Waitmsg.toString().equals(event)) {
+				// 扫码推事件且弹出“消息接收中”提示框的事件推送
+				result = eventMsgHandler.scancodeWaitmsg(params);
+			} else if (EventTypeEnum.Pic_Sysphoto.toString().equals(event)) {
+				// 弹出系统拍照发图的事件推送
+				result = eventMsgHandler.picSysphoto(params);
+			} else if (EventTypeEnum.Pic_Photo_OR_Album.toString()
+					.equals(event)) {
+				// 弹出拍照或者相册发图的事件推送
+				result = eventMsgHandler.picPhotoOrAlbum(params);
+			} else if (EventTypeEnum.Pic_Weixin.toString().equals(event)) {
+				// 弹出微信相册发图器的事件推送
+				result = eventMsgHandler.picWeixin(params);
+			} else if (EventTypeEnum.Location_Select.toString().equals(event)) {
+				// 弹出地理位置选择器的事件推送
+				result = eventMsgHandler.locationSelect(params);
+			}
 		}
-//		result = MsgUtil.objToXml(text);
-		return result;
+		String res = null;
+		if (result != null) {
+			// 设置返回数据
+			setOutputMsgInfo(result, params);
+			// 打包
+			if (MsgTypeEnum.News.toString().equals(result.getMsgType())) {
+				res = MessageUtil.newsMessageToXml(result);
+			} else {
+				res = MessageUtil.objToXml(result);
+			}
+		} else {
+			res = "";
+		}
+		return res;
 	}
+
+	/**
+	 * 设置返回数据
+	 * 
+	 * @param result
+	 * @param params
+	 */
+	private static void setOutputMsgInfo(ReturnMessage result,
+			Map<String, String> params) {
+		// 发送方帐号（open_id）
+		String fromUserName = params.get("FromUserName");
+		// 公众帐号
+		String toUserName = params.get("ToUserName");
+		// 设置发送信息
+		result.setCreateTime(new Date().getTime());
+		result.setToUserName(fromUserName);
+		result.setFromUserName(toUserName);
+	}
+
 }

@@ -15,6 +15,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.sanyka.weixin.api.mp.message.domain.ArticleDo;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -163,7 +164,19 @@ public class MessageUtil {
 		xstream.alias("xml", textMessage.getClass());
 		return xstream.toXML(textMessage);
 	}
+	/**
+	 * 图文消息对象转换成xml
+	 * 
+	 * @param newsMessage
+	 *            图文消息对象
+	 * @return xml
+	 */
 
+	public static String newsMessageToXml(Object newsMessage) {
+		xstream.alias("xml", newsMessage.getClass());
+		xstream.alias("item", new ArticleDo().getClass());
+		return xstream.toXML(newsMessage);
+	}
 	/**
 	 * 音乐消息对象转换成xml
 	 * 

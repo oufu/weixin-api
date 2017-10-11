@@ -1,12 +1,18 @@
 package com.sanyka.weixin.api.mp.message;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.sanyka.weixin.api.mp.message.domain.BaseMessage;
-import com.sanyka.weixin.api.mp.message.domain.TextMessage;
+import com.sanyka.weixin.api.mp.message.domain.ArticleDo;
+import com.sanyka.weixin.api.mp.message.domain.ImageDo;
+import com.sanyka.weixin.api.mp.message.domain.MusicDo;
+import com.sanyka.weixin.api.mp.message.service.ImageMessage;
+import com.sanyka.weixin.api.mp.message.service.MusicMessage;
+import com.sanyka.weixin.api.mp.message.service.NewsMessage;
+import com.sanyka.weixin.api.mp.message.service.TextMessage;
 
 /**
  * 普通消息处理
@@ -27,31 +33,54 @@ public class NormalMessageHandler extends MessageBase {
 	 *            接受消息对象
 	 * @return 输出消息对象
 	 */
-	public String textTypeMsg(Map<String, String> params) {
-		// 发送方帐号（open_id）
-		String fromUserName = params.get("FromUserName");
-		// 公众帐号
-		String toUserName = params.get("ToUserName");
-		// 消息类型
-		String msgType = params.get("MsgType");
-		// 内容
+	public ReturnMessage textTypeMsg(Map<String, String> params) {
 		String content = params.get("Content");
-		String result = "";
-		BaseMessage baseMsg = new BaseMessage();
-		baseMsg.setCreateTime(new Date().getTime());
-		baseMsg.setFromUserName(toUserName);
-		baseMsg.setToUserName(fromUserName);
-
-		TextMessage text = new TextMessage(baseMsg);
+		TextMessage text = new TextMessage();
 		if ("1".equals(content)) {
-			text.setContent("我不告诉你！");
+			// 图文
+			NewsMessage newMsg = new NewsMessage();
+			List<ArticleDo> list = new ArrayList<ArticleDo>();
+			ArticleDo article = new ArticleDo();
+			// 标题
+			article.setTitle("图文测试");
+			// 图片显示地址
+			article.setPicUrl("http://avatar.csdn.net/7/8/0/1_oufua.jpg");
+			// 跳转地址
+			article.setUrl("http://blog.csdn.net/oufua/article/details/48198709");
+			// 描述
+			article.setDescription("还不知道说点会话上比较好等下我想好了再说吧。");
+			list.add(article);
+			newMsg.setArticles(list);
+			newMsg.setArticleCount(list.size());
+			return newMsg;
+		} else if ("2".equals(content)) {
+			// 图片
+			ImageMessage imageBase = new ImageMessage();
+			ImageDo images = new ImageDo();
+			images.setMediaId("C23ppbEcKmJKrLDOQ5CXVh45_Hz8c-1r-THtaD12Y7Uwn69TmcCSht5dsjfv6XmF");
+			imageBase.setImage(images);
+			return imageBase;
+		} else if ("3".equals(content)) {
+			// 音乐
+			MusicDo nusic = new MusicDo();
+			nusic.setDescription("");
+			nusic.setThumbMediaId("dakJp55sNNO6GhN4aAD70fS13ApC2CM2SqpOqHOQ5KObjXQq1rzYq4KmFTPyJ50_");
+			nusic.setHQMusicUrl("http://wxtest.tunnel.mobi/wx/resource/12438064524840064.mp3");
+			nusic.setTitle("初初那年");
+			nusic.setMusicUrl("http://wxtest.tunnel.mobi/wx/resource/12438064524840064.mp3");
+			MusicMessage imageBase = new MusicMessage();
+			imageBase.setMusic(nusic);
+			return imageBase;
+		} else if ("4".equals(content)) {
+			// 视频
+		} else if ("5".equals(content)) {
+			// 语音
 		} else if ("?".equals(content) || "？".equals(content)) {
 			text.setContent("欢迎你关注：1、查看天气  2、查看本人信息");
 		} else {
 			text.setContent("你发的信息是：" + content);
 		}
-		// result = MessageUtil.objToXml(text);
-		return returnMsg(text);
+		return text;
 	}
 
 	/**
@@ -61,8 +90,13 @@ public class NormalMessageHandler extends MessageBase {
 	 *            接受消息对象
 	 * @return 输出消息对象
 	 */
-	public String imageTypeMsg(Map<String, String> msg) {
-		return null;
+	public ReturnMessage imageTypeMsg(Map<String, String> msg) {
+		// 图片
+		ImageMessage imageBase = new ImageMessage();
+		ImageDo images = new ImageDo();
+		images.setMediaId(msg.get("MediaId"));
+		imageBase.setImage(images);
+		return imageBase;
 	}
 
 	/**
@@ -72,8 +106,10 @@ public class NormalMessageHandler extends MessageBase {
 	 *            接受消息对象
 	 * @return 输出消息对象
 	 */
-	public String voiceTypeMsg(Map<String, String> msg) {
-		return null;
+	public ReturnMessage voiceTypeMsg(Map<String, String> msg) {
+		TextMessage text = new TextMessage();
+		text.setContent(msg.get("MediaId"));
+		return text;
 	}
 
 	/**
@@ -83,8 +119,10 @@ public class NormalMessageHandler extends MessageBase {
 	 *            接受消息对象
 	 * @return 输出消息对象
 	 */
-	public String videoTypeMsg(Map<String, String> msg) {
-		return null;
+	public ReturnMessage videoTypeMsg(Map<String, String> msg) {
+		TextMessage text = new TextMessage();
+		text.setContent(msg.get("MediaId"));
+		return text;
 	}
 
 	/**
@@ -94,8 +132,10 @@ public class NormalMessageHandler extends MessageBase {
 	 *            接受消息对象
 	 * @return 输出消息对象
 	 */
-	public String shortVideoTypeMsg(Map<String, String> msg) {
-		return null;
+	public ReturnMessage shortVideoTypeMsg(Map<String, String> msg) {
+		TextMessage text = new TextMessage();
+		text.setContent(msg.get("MediaId"));
+		return text;
 	}
 
 	/**
@@ -105,8 +145,12 @@ public class NormalMessageHandler extends MessageBase {
 	 *            接受消息对象
 	 * @return 输出消息对象
 	 */
-	public String locationTypeMsg(Map<String, String> msg) {
-		return null;
+	public ReturnMessage locationTypeMsg(Map<String, String> params) {
+		TextMessage text = new TextMessage();
+		text.setContent("位置：" + params.get("Label") + "x坐标信息"
+				+ params.get("Location_X") + " y坐标信息"
+				+ params.get("Location_Y") + " 精度:" + params.get("Scale"));
+		return text;
 	}
 
 	/**
@@ -116,7 +160,10 @@ public class NormalMessageHandler extends MessageBase {
 	 *            接受消息对象
 	 * @return 输出消息对象
 	 */
-	public String linkTypeMsg(Map<String, String> msg) {
-		return null;
+	public ReturnMessage linkTypeMsg(Map<String, String> msg) {
+		TextMessage text = new TextMessage();
+		text.setContent("<a href =\"" + msg.get("Url") + "\" >"
+				+ msg.get("Title") + "> </a>");
+		return text;
 	}
 }
