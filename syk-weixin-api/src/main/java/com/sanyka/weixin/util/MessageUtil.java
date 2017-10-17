@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -149,7 +150,6 @@ public class MessageUtil {
 		// 释放资源
 		inputStream.close();
 		inputStream = null;
-
 		return map;
 	}
 

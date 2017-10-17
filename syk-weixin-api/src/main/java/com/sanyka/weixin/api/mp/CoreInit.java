@@ -31,12 +31,12 @@ public class CoreInit extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		// 加载配置文件
 		log.info("init weixin config file start");
-		//加载配置文件 
+		// 手动配置
+		AppConfig.configConstant();
+		// 加载配置文件
 		WeixinProperties.init();
-		//初始化常量
+		// 初始化常量
 		AppConfig.init();
-		//手动配置
-		AppConfig.configConstant(new AppConfig());
 		log.info("init weixin config file end");
 	}
 
@@ -97,7 +97,6 @@ public class CoreInit extends HttpServlet {
 			out.write(result.getBytes("utf-8"));
 			out.close();
 			out.flush();
-			log.info("result :[{}] ", result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

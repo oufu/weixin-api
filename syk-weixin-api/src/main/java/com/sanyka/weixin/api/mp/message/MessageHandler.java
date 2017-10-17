@@ -32,53 +32,63 @@ public class MessageHandler extends MessageBase {
 			log.error("xml 解析失败");
 			return "";
 		}
-
+		log.debug("params :[{}] ", params.toString());
 		// 消息类型
 		String msgType = params.get("MsgType");
-		NormalMessageHandler normalMessage = HandlerFactory
+		NormalMessageBase normalMessage = HandlerFactory
 				.getNormalMessageHandler();
 		// 文本消息处理
 		ReturnMessage result = null;
-		if (MsgTypeEnum.Text.toString().equals(msgType)) {
+		if (MsgTypeEnum.Text.toString().equalsIgnoreCase(msgType)) {
 			result = normalMessage.textTypeMsg(params);
-		} else if (MsgTypeEnum.Image.toString().equals(msgType)) {
+		} else if (MsgTypeEnum.Image.toString().equalsIgnoreCase(msgType)) {
 			// 处理图片消息
 			result = normalMessage.imageTypeMsg(params);
-		} else if (MsgTypeEnum.Voice.toString().equals(msgType)) {
+		} else if (MsgTypeEnum.Voice.toString().equalsIgnoreCase(msgType)) {
 			// 处理语音消息
 			result = normalMessage.voiceTypeMsg(params);
-		} else if (MsgTypeEnum.Video.toString().equals(msgType)) {
+		} else if (MsgTypeEnum.Video.toString().equalsIgnoreCase(msgType)) {
 			// 处理视频消息
 			result = normalMessage.videoTypeMsg(params);
-		} else if (MsgTypeEnum.ShortVideo.toString().equals(msgType)) {
+		} else if (MsgTypeEnum.ShortVideo.toString().equalsIgnoreCase(msgType)) {
 			// 处理小视频消息
 			result = normalMessage.shortVideoTypeMsg(params);
-		} else if (MsgTypeEnum.Location.toString().equals(msgType)) {
+		} else if (MsgTypeEnum.Location.toString().equalsIgnoreCase(msgType)) {
 			// 处理地理位置消息
 			result = normalMessage.locationTypeMsg(params);
-		} else if (MsgTypeEnum.Link.toString().equals(msgType)) {
+		} else if (MsgTypeEnum.Link.toString().equalsIgnoreCase(msgType)) {
 			// 处理链接消息
 			result = normalMessage.linkTypeMsg(params);
-		} else if (MsgTypeEnum.Event.toString().equals(msgType)) {
+		} else if (MsgTypeEnum.Event.toString().equalsIgnoreCase(msgType)) {
 			// 获取事件类型
 			String event = params.get("Event");
 			// 获取消息处理工具类
-			EventMessageHandler eventMsgHandler = HandlerFactory
+			EventMessageBase eventMsgHandler = HandlerFactory
 					.getEventMessageHandler();
 			// 自定义菜单事件
-			if (EventTypeEnum.Click.toString().equals(event)) {
+			if (EventTypeEnum.Click.toString().equalsIgnoreCase(event)) {
 				// 点击菜单拉取消息时的事件推送
 				result = eventMsgHandler.click(params);
-			} else if (EventTypeEnum.View.toString().equals(event)) {
+			} else if (EventTypeEnum.View.toString().equalsIgnoreCase(event)) {
 				// 点击菜单跳转链接时的事件推送
 				result = eventMsgHandler.view(params);
-			} else if (EventTypeEnum.Subscribe.toString().equals(event)) {
+			} else if (EventTypeEnum.Subscribe.toString().equalsIgnoreCase(
+					event)) {
 				// 关注事件
-				result = eventMsgHandler.subscribe(params);
-			} else if (EventTypeEnum.Unsubscribe.toString().equals(event)) {
+				// 获取事件KEY值，判断是否关注
+				String eventKey = params.get("EventKey");
+				if (eventKey.startsWith("qrscene_")) {
+					// 用户未关注时，进行关注后的事件推送
+					params.put("EventKey", eventKey.replace("qrscene_", ""));
+					result = eventMsgHandler.qrsceneSubscribe(params);
+				} else {
+					result = eventMsgHandler.subscribe(params);
+				}
+			} else if (EventTypeEnum.Unsubscribe.toString().equalsIgnoreCase(
+					event)) {
 				// 取消关注事件
 				result = eventMsgHandler.unsubscribe(params);
-			} else if (EventTypeEnum.Scan.toString().equals(event)) {
+			} else if (EventTypeEnum.Scan.toString().equalsIgnoreCase(event)) {
 				// 扫描带参数二维码事件
 				// 获取事件KEY值，判断是否关注
 				String eventKey = params.get("EventKey");
@@ -89,26 +99,32 @@ public class MessageHandler extends MessageBase {
 					// 用户已关注时的事件推送
 					result = eventMsgHandler.qrsceneScan(params);
 				}
-			} else if (EventTypeEnum.Location.toString().equals(event)) {
+			} else if (EventTypeEnum.Location.toString()
+					.equalsIgnoreCase(event)) {
 				// 上报地理位置事件
 				result = eventMsgHandler.location(params);
-			} else if (EventTypeEnum.Scancode_Push.toString().equals(event)) {
+			} else if (EventTypeEnum.Scancode_Push.toString().equalsIgnoreCase(
+					event)) {
 				// 扫码推事件的事件推送
 				result = eventMsgHandler.scancodePush(params);
-			} else if (EventTypeEnum.Scancode_Waitmsg.toString().equals(event)) {
+			} else if (EventTypeEnum.Scancode_Waitmsg.toString()
+					.equalsIgnoreCase(event)) {
 				// 扫码推事件且弹出“消息接收中”提示框的事件推送
 				result = eventMsgHandler.scancodeWaitmsg(params);
-			} else if (EventTypeEnum.Pic_Sysphoto.toString().equals(event)) {
+			} else if (EventTypeEnum.Pic_Sysphoto.toString().equalsIgnoreCase(
+					event)) {
 				// 弹出系统拍照发图的事件推送
 				result = eventMsgHandler.picSysphoto(params);
 			} else if (EventTypeEnum.Pic_Photo_OR_Album.toString()
-					.equals(event)) {
+					.equalsIgnoreCase(event)) {
 				// 弹出拍照或者相册发图的事件推送
 				result = eventMsgHandler.picPhotoOrAlbum(params);
-			} else if (EventTypeEnum.Pic_Weixin.toString().equals(event)) {
+			} else if (EventTypeEnum.Pic_Weixin.toString().equalsIgnoreCase(
+					event)) {
 				// 弹出微信相册发图器的事件推送
 				result = eventMsgHandler.picWeixin(params);
-			} else if (EventTypeEnum.Location_Select.toString().equals(event)) {
+			} else if (EventTypeEnum.Location_Select.toString()
+					.equalsIgnoreCase(event)) {
 				// 弹出地理位置选择器的事件推送
 				result = eventMsgHandler.locationSelect(params);
 			}
@@ -118,7 +134,8 @@ public class MessageHandler extends MessageBase {
 			// 设置返回数据
 			setOutputMsgInfo(result, params);
 			// 打包
-			if (MsgTypeEnum.News.toString().equals(result.getMsgType())) {
+			if (MsgTypeEnum.News.toString().equalsIgnoreCase(
+					result.getMsgType())) {
 				res = MessageUtil.newsMessageToXml(result);
 			} else {
 				res = MessageUtil.objToXml(result);
@@ -126,6 +143,7 @@ public class MessageHandler extends MessageBase {
 		} else {
 			res = "";
 		}
+		log.debug("result :[{}] ", res);
 		return res;
 	}
 

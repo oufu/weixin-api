@@ -20,7 +20,7 @@ import com.sanyka.weixin.api.mp.message.service.TextMessage;
  * @author OF
  * @date 2017年10月10日
  */
-public class NormalMessageHandler extends MessageBase {
+public abstract class NormalMessageBase extends MessageBase {
 
 	public String execute(HttpServletRequest request) {
 		return null;
@@ -44,7 +44,7 @@ public class NormalMessageHandler extends MessageBase {
 			// 标题
 			article.setTitle("图文测试");
 			// 图片显示地址
-			article.setPicUrl("http://avatar.csdn.net/7/8/0/1_oufua.jpg");
+			article.setPicUrl("http://upload-images.jianshu.io/upload_images/2397007-235cc559d1bd9ea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240");
 			// 跳转地址
 			article.setUrl("http://blog.csdn.net/oufua/article/details/48198709");
 			// 描述
