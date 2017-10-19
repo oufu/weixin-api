@@ -24,8 +24,10 @@ public class AppConfig {
 	/** 普通消息处理类 */
 	public static String WX_APP_MESSAGE_HANDLER_NORMAL = "com.sanyka.weixin.api.mp.message.NormalMessageHandler";
 	/** 事件处理类 */
-	public static String WX_WX_APP_MESSAGE_HANDLER_EVENT = "com.sanyka.weixin.api.mp.message.EventMessageHandler";
-
+	public static String WX_APP_MESSAGE_HANDLER_EVENT = "com.sanyka.weixin.api.mp.message.EventMessageHandler";
+	/**微信认证回调*/
+	public static String WX_REDIRECT_URI = "https://7f4dcfa1.ngrok.io/et-admin/wx/postLogin.html";
+	
 	/** 默认配置文件路径 */
 	public static String WX_CONFIG_FILE = "weixin.properties";
 
@@ -40,7 +42,7 @@ public class AppConfig {
 		WX_APP_CHARSET = WeixinProperties.getPropertyValue("wx_app_charset");
 		WX_APP_MESSAGE_HANDLER_NORMAL = WeixinProperties
 				.getPropertyValue("wx_app_message_handler_normal");
-		WX_WX_APP_MESSAGE_HANDLER_EVENT = WeixinProperties
+		WX_APP_MESSAGE_HANDLER_EVENT = WeixinProperties
 				.getPropertyValue("wx_app_message_handler_event");
 	}
 

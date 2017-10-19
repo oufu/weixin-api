@@ -57,7 +57,7 @@ public class HandlerFactory {
 	}
 
 	 private static EventMessageBase eventMessageHandler = null;
-	private static String defaultEventHandler = AppConfig.WX_WX_APP_MESSAGE_HANDLER_EVENT;
+	private static String defaultEventHandler = AppConfig.WX_APP_MESSAGE_HANDLER_EVENT;
 
 	public static EventMessageBase getEventMessageHandler() {
 		if (eventMessageHandler == null) {
