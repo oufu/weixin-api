@@ -7,7 +7,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sanyka.weixin.exception.ErrorException;
+import com.sanyka.weixin.exception.WeixinException;
 
 /**
  * socket 发送报文工具
@@ -149,7 +149,7 @@ public class SocketClient {
 			socket.setSoTimeout(timeout);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ErrorException("can't connect to host ：" + ip);
+			throw new WeixinException("can't connect to host ：" + ip);
 		}
 		OutputStream out = null;
 		try {
@@ -165,7 +165,7 @@ public class SocketClient {
 			e.printStackTrace();
 			out.close();
 			socket.close();
-			throw new ErrorException("send msg error : " + e.getMessage());
+			throw new WeixinException("send msg error : " + e.getMessage());
 		}
 		InputStream in = null;
 		try {
@@ -183,7 +183,7 @@ public class SocketClient {
 			int pos = 0;
 			while (true) {
 				if ((pos = in.read(b, off, len - off)) == -1) {
-					throw new ErrorException("this msg is less of length ");
+					throw new WeixinException("this msg is less of length ");
 				}
 				off += pos;
 				if (off >= len)
@@ -193,7 +193,7 @@ public class SocketClient {
 			return retmsg;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ErrorException("recv msg error : " + e.getMessage());
+			throw new WeixinException("recv msg error : " + e.getMessage());
 		} finally {
 			out.close();
 			in.close();

@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
 
-import com.sanyka.weixin.exception.ErrorException;
+import com.sanyka.weixin.exception.WeixinException;
 /**
  * 类名： Decryption<br>
  * 功能：CFCA密码控件解密<br>
@@ -31,12 +31,12 @@ public class Decryption {
 	 * @param cDesCode
 	 *            客户端3des
 	 * @return
-	 * @throws ErrorException
+	 * @throws WeixinException
 	 */
 	public static String decodePwd(String sRandomKey, String cRandomKey,
-			String cRSA) throws ErrorException {
+			String cRSA) throws WeixinException {
 		if (sRandomKey.isEmpty() || cRandomKey.isEmpty() || cRSA.isEmpty()) {
-			throw new ErrorException("解密参数不能为空");
+			throw new WeixinException("解密参数不能为空");
 		}
 		String[] args = new String[5];
 		// 证书路径取配置文件
@@ -53,7 +53,7 @@ public class Decryption {
 
 	}
 
-	public static String cipher(String[] args) throws ErrorException {
+	public static String cipher(String[] args) throws WeixinException {
 		int nArgumentsNumber = args.length;
 		log.info("解密参数长度" + nArgumentsNumber);
 		for (int i = 0; i < nArgumentsNumber; i++) {
@@ -62,7 +62,7 @@ public class Decryption {
 
 		if (5 != nArgumentsNumber) {
 			System.out.println("Error arguments");
-			throw new ErrorException("解密参数不够");
+			throw new WeixinException("解密参数不够");
 		}
 		String pfxFileName = args[0];
 		String pfxPassword = args[1];
@@ -74,14 +74,14 @@ public class Decryption {
 		byte[] plainPWDBase64Binary = TripleDES.DecryptCipher(RSBase64,
 				plainRCBinary, tripleDESEncryptedDataBase64);
 		if ("".equals(plainPWDBase64Binary) || plainPWDBase64Binary == null) {
-			throw new ErrorException("解密失败！");
+			throw new WeixinException("解密失败！");
 		}
 		String plainPWDBase64 = new String(plainPWDBase64Binary);
 		return plainPWDBase64;
 	}
 
  
-	public static void main(String[] argsa) throws UnsupportedEncodingException, ErrorException {
+	public static void main(String[] argsa) throws UnsupportedEncodingException, WeixinException {
 
 		String cDes = "QtlUda7OWysl6XYWSP/qYdeofpb5bBOG5jFPlPKuAuFXsuGK3n8v885ibHtEU1vfSSF+XomwV6uStqka4MaqXvlHgFarnVnJAB6G/3t8E+Cnw01twzT0o2C78CrKLjt2Gts3c735wsnWGxSTeiaPcgxxFkwDv3woC13ZLPiw5tc=";
 		String rRandomKey = "zVK/lauI9JLfT70M3uXDoL==";

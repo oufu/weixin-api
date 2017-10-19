@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.sanyka.weixin.exception.ErrorException;
+import com.sanyka.weixin.exception.WeixinException;
 
 /**
  * 字符串处理工具类
@@ -34,15 +34,15 @@ public class StringUtil extends StringUtils {
 	 * @param encoding
 	 *            编码集
 	 * @return
-	 * @throws ErrorException
+	 * @throws WeixinException
 	 */
 	public static String getMsgHead(String msg, int len, String encoding)
-			throws ErrorException {
+			throws WeixinException {
 		if (isBlank(encoding)) {
-			throw new ErrorException("msg is blank!");
+			throw new WeixinException("msg is blank!");
 		}
 		if (len <= 0) {
-			throw new ErrorException("len is must be bigger than 0 !");
+			throw new WeixinException("len is must be bigger than 0 !");
 		}
 		try {
 			String head = String.format("%0" + len + "d",

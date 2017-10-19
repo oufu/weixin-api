@@ -2,7 +2,7 @@ package com.sanyka.weixin.exception;
 
 import java.util.Map;
 
-public class ErrorException extends Exception {
+public class WeixinException extends Exception {
 
 	/**
 	 *
@@ -14,16 +14,16 @@ public class ErrorException extends Exception {
 	/**
 	 * @param msg
 	 */
-	public ErrorException(String msg) {
+	public WeixinException(String msg) {
 		super(msg);
 	}
 
-	public ErrorException(String message, Map<String, Object> returndata) {
+	public WeixinException(String message, Map<String, Object> returndata) {
 		super(message);
 		this.returndata = returndata;
 	}
 
-	public ErrorException(String erroCode, String msg) {
+	public WeixinException(String erroCode, String msg) {
 		super(msg);
 		this.erroCode = erroCode;
 	}

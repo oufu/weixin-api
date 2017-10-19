@@ -11,6 +11,9 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.squareup.okhttp.Headers;
@@ -35,18 +38,7 @@ public class OkHttp {
 	private static final MediaType form = MediaType
 			.parse("application/x-www-form-urlencoded ");
 
-	public static void main(String[] args) {
-
-		okHttpGet(
-				"http://apis.baidu.com/datatiny/cardinfo/cardinfo?cardnum=5187102112341234",
-				new Headers.Builder().add("apikey",
-						"953eb9b1f583df6d427ec16e280f2550").build());
-
-		// okHttpPostJson(
-		// "http://192.168.2.188:8080/EterApp/api/userinfo.json",
-		// "{\"body\":{\"user_no\":\"U201610100000002\",\"user_password\":\"123456\"},\"head\":{\"trans_time\":\"110400\",\"trans_code\":\"100010\",\"jsessionid\":\"4bef0cf55e87432bb88f6e650bebb71a\",\"network_type\":\"1\",\"trans_date\":\"20160629\",\"trans_type\":\"02\",\"phone_system\":\"1\",\"system_version\":\"1.1\"}}");
-	}
-
+	private static Logger log = LoggerFactory.getLogger(OkHttp.class);
 	public static OkHttpClient httpClinet = null;
 	static {
 		httpClinet = new OkHttpClient();
@@ -133,14 +125,14 @@ public class OkHttp {
 						.post(RequestBody.create(MediaType.parse(mediaType),
 								content)).build();
 			}
-			System.out.println("request : " + request + " body: " + content);
+			log.debug("request : " + request + " body: " + content);
 			Response response = httpClinet.newCall(request).execute();
-			System.out.println("rev response :" + response);
+			log.debug("response :" + response);
 			if (!response.isSuccessful()) {
 				return "";
 			}
 			result = response.body().string();
-			System.out.println(result);
+			log.debug("rev result :" + result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -175,13 +167,12 @@ public class OkHttp {
 						.post(RequestBody.create(MediaType.parse(mediaType),
 								content)).build();
 			}
-			System.out.println("request : " + request);
+			log.debug("request : " + request + " body: " + content);
 			Response response = httpClinet.newCall(request).execute();
-			System.out.println("rev response :" + response);
+			log.debug("response :" + response);
 			if (!response.isSuccessful()) {
 				return null;
 			}
-			// System.out.println(response.body().string());
 			result = response.body();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -219,13 +210,12 @@ public class OkHttp {
 			// 是否有请求头信息
 			request = new Request.Builder().addHeader("Connection", "close")
 					.url(url).get().build();
-			System.out.println("request : " + request);
+			log.debug("request : " + request);
 			Response response = httpClinet.newCall(request).execute();
-			System.out.println("rev response :" + response);
+			log.debug("response :" + response);
 			if (!response.isSuccessful()) {
 				return null;
 			}
-			// System.out.println(response.body().string());
 			result = JSON.parseObject(response.body().string());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -256,13 +246,12 @@ public class OkHttp {
 				request = new Request.Builder().url(url).headers(headers).get()
 						.build();
 			}
-			System.out.println("request : " + request);
+			log.debug("request : " + request);
 			Response response = httpClinet.newCall(request).execute();
-			System.out.println("rev response :" + response);
+			log.debug("response :" + response);
 			if (!response.isSuccessful()) {
 				return "";
 			}
-			// System.out.println(response.body().string());
 			result = response.body().string();
 		} catch (IOException e) {
 			e.printStackTrace();

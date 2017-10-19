@@ -1,6 +1,6 @@
 package com.sanyka.weixin.utils.check;
 
-import com.sanyka.weixin.exception.ErrorException;
+import com.sanyka.weixin.exception.WeixinException;
 
 /**
  * 检验银行卡卡号 ps:采用 Luhm
@@ -50,7 +50,7 @@ public class BankCardCheck {
 		return (luhmSum % 10 == 0) ? '0' : (char) ((10 - luhmSum % 10) + '0');
 	}
 
-	public static void main(String[] args) throws ErrorException {
+	public static void main(String[] args) throws WeixinException {
 		String card = "62302000015527588";
 		System.out.println("      card: " + card);
 		System.out.println("check code: " + getBankCardCheckCode(card));// 检验码

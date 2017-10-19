@@ -7,7 +7,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
-import com.sanyka.weixin.exception.ErrorException;
+import com.sanyka.weixin.exception.WeixinException;
 import com.sanyka.weixin.utils.CalendarUtil;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
@@ -73,11 +73,11 @@ public class KKTripleDes {
 	 * get IV 初始向量IV是8字节
 	 * 
 	 * @return byte []
-	 * @throws ErrorException
+	 * @throws WeixinException
 	 */
-	public byte[] getIV(byte[] key) throws ErrorException {
+	public byte[] getIV(byte[] key) throws WeixinException {
 		if (key.length < 24) {
-			throw new ErrorException("not is key length < 24");
+			throw new WeixinException("not is key length < 24");
 		}
 		byte[] iv = new byte[8];
 		int index = 0;

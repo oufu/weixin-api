@@ -5,6 +5,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sanyka.weixin.api.mp.AppConfig;
+import com.sanyka.weixin.exception.WeixinException;
 import com.sanyka.weixin.util.OkHttp;
 
 /**
@@ -26,8 +27,10 @@ public class AccessToken {
 				+ AppConfig.WX_APP_ID
 				+ "&secret="
 				+ AppConfig.WX_APP_SECRET;
-		String json = OkHttp.okHttpGet(url);
-		JSONObject jobjct = JSON.parseObject(json);
+		String json = null;
+		JSONObject jobjct = null;
+		json = OkHttp.okHttpGet(url);
+		jobjct = JSON.parseObject(json);
 		return jobjct;
 	}
 
